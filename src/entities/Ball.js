@@ -53,13 +53,13 @@ export default class Ball extends Phaser.GameObjects.Arc {
     const vec = physics.velocityFromAngle(angle, 300);
 
     this.body.setVelocity(vec.x, vec.y);
-    this.body.setMaxSpeed(400);
+    this.body.setMaxSpeed(500);
   }
 
   increaseSpeed() {
     const { body } = this;
 
-    body.setVelocity((body.velocity.x *= 1.05), (body.velocity.y *= 1.05));
+    body.setVelocity((body.velocity.x *= 1.07), (body.velocity.y *= 1.07));
   }
 
   update() {
