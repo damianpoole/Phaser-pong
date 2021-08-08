@@ -18,6 +18,7 @@ export default class Ball extends Phaser.GameObjects.Arc {
 
     this.scene.add.existing(this);
     this.scene.physics.add.existing(this);
+    this.body.setCircle(10);
 
     this.body.setCollideWorldBounds(true, 1, 1);
 

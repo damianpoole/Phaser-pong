@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import Ball from "../entities/Ball";
 import Paddle from "../entities/Paddle";
 import { GameBackground } from "../consts/SceneKeys";
-import * as Colors from "../consts/Colors";
+import { Easy, Medium, Hard } from "../consts/Difficulty";
 
 export default class Game extends Phaser.Scene {
   /**
@@ -31,10 +31,14 @@ export default class Game extends Phaser.Scene {
   frameTime = 0;
   cpuTime = 0;
 
+  difficulty;
+
   preload() {}
 
-  create() {
+  create(difficulty) {
     const { player, cpu, add } = this;
+
+    this.difficulty = difficulty;
 
     this.scene.run(GameBackground);
     this.scene.sendToBack(GameBackground);
@@ -60,8 +64,6 @@ export default class Game extends Phaser.Scene {
       this
     );
 
-    this.ball.resetBall();
-
     player.display = add
       .text(300, 125, "0", {
         color: "#fff",
@@ -77,11 +79,22 @@ export default class Game extends Phaser.Scene {
       .setOrigin(0.5);
 
     this.cursors = this.input.keyboard.createCursorKeys();
+
+    // start the game
+    this.time.delayedCall(1200, () => {
+      this.ball.resetBall();
+    });
   }
 
   update(time, delta) {
     this.frameTime += delta;
     this.cpuTime += delta;
+
+    const cpuReaction = {
+      [Easy]: 33,
+      [Medium]: 25,
+      [Hard]: 19,
+    };
 
     const { player, cpu } = this;
 
@@ -93,7 +106,7 @@ export default class Game extends Phaser.Scene {
       this.ball.update();
     }
 
-    if (this.cpuTime > 33) {
+    if (this.cpuTime > cpuReaction[this.difficulty]) {
       this.cpuTime = 0;
       cpu.entity.update(this.cursors, this.ball);
     }
