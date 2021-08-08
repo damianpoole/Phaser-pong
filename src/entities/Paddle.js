@@ -52,15 +52,17 @@ export default class Paddle extends Phaser.GameObjects.Rectangle {
     const { movementVelocity } = this;
     const speed = 3;
 
-    if (Math.abs(diff) < 10) return;
+    if (!ball.isTrackable) return;
+
+    if (Math.abs(diff) < 20) return;
 
     if (diff < 0) {
-      movementVelocity.y = -speed;
+      movementVelocity.y += -speed;
       if (movementVelocity.y < -10) {
         movementVelocity.y = -10;
       }
     } else if (diff > 0) {
-      movementVelocity.y = speed;
+      movementVelocity.y += speed;
       if (movementVelocity.y > 10) {
         movementVelocity.y = 10;
       }

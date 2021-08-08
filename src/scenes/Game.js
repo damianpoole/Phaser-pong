@@ -28,6 +28,9 @@ export default class Game extends Phaser.Scene {
     display: undefined,
   };
 
+  frameTime = 0;
+  cpuTime = 0;
+
   preload() {}
 
   create() {
@@ -42,8 +45,20 @@ export default class Game extends Phaser.Scene {
     player.entity = new Paddle(this);
     cpu.entity = new Paddle(this, true);
 
-    this.physics.add.collider(player.entity, this.ball);
-    this.physics.add.collider(cpu.entity, this.ball);
+    this.physics.add.collider(
+      player.entity,
+      this.ball,
+      this.insreaseBallSpeed,
+      undefined,
+      this
+    );
+    this.physics.add.collider(
+      cpu.entity,
+      this.ball,
+      this.insreaseBallSpeed,
+      undefined,
+      this
+    );
 
     this.ball.resetBall();
 
@@ -64,15 +79,24 @@ export default class Game extends Phaser.Scene {
     this.cursors = this.input.keyboard.createCursorKeys();
   }
 
-  update() {
+  update(time, delta) {
+    this.frameTime += delta;
+    this.cpuTime += delta;
+
     const { player, cpu } = this;
 
-    player.entity.update(this.cursors, this.ball);
-    cpu.entity.update(this.cursors, this.ball);
+    if (this.frameTime > 16.5) {
+      this.frameTime = 0;
+      player.entity.update(this.cursors, this.ball);
+      this.calculateScore();
 
-    this.calculateScore();
+      this.ball.update();
+    }
 
-    this.ball.update();
+    if (this.cpuTime > 33) {
+      this.cpuTime = 0;
+      cpu.entity.update(this.cursors, this.ball);
+    }
   }
 
   calculateScore() {
@@ -87,5 +111,9 @@ export default class Game extends Phaser.Scene {
       player.score++;
       player.display.setText(`${player.score}`);
     }
+  }
+
+  insreaseBallSpeed() {
+    this.ball.increaseSpeed();
   }
 }

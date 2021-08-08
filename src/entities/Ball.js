@@ -34,13 +34,31 @@ export default class Ball extends Phaser.GameObjects.Arc {
     return this.x > 830;
   }
 
+  get isTrackable() {
+    return this.x > 200;
+  }
+
   resetBall() {
     const { physics } = this.scene;
     this.setPosition(400, 250);
-    const angle = Phaser.Math.Between(0, 360);
-    const vec = physics.velocityFromAngle(angle, 200);
+    const possibleAngles = [
+      Phaser.Math.Between(30, 70),
+      Phaser.Math.Between(110, 155),
+      Phaser.Math.Between(205, 250),
+      Phaser.Math.Between(290, 340),
+    ];
+    const angle = possibleAngles[Math.abs(Phaser.Math.Between(0, 3))];
+
+    const vec = physics.velocityFromAngle(angle, 300);
 
     this.body.setVelocity(vec.x, vec.y);
+    this.body.setMaxSpeed(400);
+  }
+
+  increaseSpeed() {
+    const { body } = this;
+
+    body.setVelocity((body.velocity.x *= 1.05), (body.velocity.y *= 1.05));
   }
 
   update() {
