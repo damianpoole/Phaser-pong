@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import Ball from "../entities/Ball";
 import Paddle from "../entities/Paddle";
-import { GameBackground } from "../consts/SceneKeys";
+import { GameBackground, GameOver } from "../consts/SceneKeys";
 import { Easy, Medium, Hard } from "../consts/Difficulty";
 
 export default class Game extends Phaser.Scene {
@@ -33,7 +33,12 @@ export default class Game extends Phaser.Scene {
 
   difficulty;
 
-  preload() {}
+  init() {
+    this.player.score = 0;
+    this.cpu.score = 0;
+
+    document.getElementById("container").style.backgroundColor = "#006600";
+  }
 
   create(difficulty) {
     const { player, cpu, add } = this;
@@ -114,6 +119,7 @@ export default class Game extends Phaser.Scene {
 
   calculateScore() {
     const { ball, player, cpu } = this;
+    const winningScore = 7;
 
     if (ball.inLeftScoreZone) {
       cpu.score++;
@@ -123,6 +129,16 @@ export default class Game extends Phaser.Scene {
     if (ball.inRightScoreZone) {
       player.score++;
       player.display.setText(`${player.score}`);
+    }
+
+    const playerWon = player.score >= winningScore;
+    const cpuWon = cpu.score >= winningScore;
+    const gameOver = playerWon || cpuWon;
+
+    if (gameOver) {
+      this.scene.start(GameOver, { win: playerWon });
+      this.scene.stop(GameBackground);
+      this.physics.world.remove(ball.body);
     }
   }
 

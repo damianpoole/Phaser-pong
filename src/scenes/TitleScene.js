@@ -2,6 +2,12 @@ import Phaser from "phaser";
 import { Game } from "../consts/SceneKeys";
 import { Easy, Medium, Hard } from "../consts/Difficulty";
 
+const difficultyColors = {
+  [Easy]: "#006600",
+  [Medium]: "#000066",
+  [Hard]: "#660000",
+};
+
 export default class TitleScene extends Phaser.Scene {
   difficulty = Easy;
   difficultyDisplay;
@@ -31,7 +37,7 @@ export default class TitleScene extends Phaser.Scene {
       .text(400, 380, `${this.difficulty}`, {
         fontFamily: "sans-serif",
         fontSize: 22,
-        color: "#333",
+        color: difficultyColors[this.difficulty],
       })
       .setOrigin(0.5);
 
@@ -52,11 +58,13 @@ export default class TitleScene extends Phaser.Scene {
     if (difficulty === Easy) {
       this.difficulty = Medium;
       difficultyDisplay.text = Medium;
+      difficultyDisplay.setColor(difficultyColors[this.difficulty]);
     }
 
     if (difficulty === Medium) {
       this.difficulty = Hard;
       difficultyDisplay.text = Hard;
+      difficultyDisplay.setColor(difficultyColors[this.difficulty]);
     }
   }
 
@@ -68,11 +76,13 @@ export default class TitleScene extends Phaser.Scene {
     if (difficulty === Hard) {
       this.difficulty = Medium;
       difficultyDisplay.text = Medium;
+      difficultyDisplay.setColor(difficultyColors[this.difficulty]);
     }
 
     if (difficulty === Medium) {
       this.difficulty = Easy;
       difficultyDisplay.text = Easy;
+      difficultyDisplay.setColor(difficultyColors[this.difficulty]);
     }
   }
 }
